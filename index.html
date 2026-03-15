@@ -156,6 +156,15 @@
 
 @media (max-width: 768px) {
   .hero .publication-links .button { font-size: 0.85rem; padding: 0.5rem 0.75rem; }
+
+  /* Mobile: image on top, text below on black background */
+  .hero.video .overlay { display: none; }
+  .hero.video .hero-body {
+    position: static;
+    inset: unset;
+    background-color: #000;
+    padding: 2rem 1.25rem;
+  }
 }
   </style>
 <link rel="preload" as="image" href="./static/images/DreamPlan_teaser.svg" fetchpriority="high">
