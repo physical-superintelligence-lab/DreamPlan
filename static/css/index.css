@@ -1,0 +1,245 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-video-column {
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+
+.has-bg-img { 
+  background: url('/static/images/toss.jpeg')center center;
+   background-size:cover; }
+
+
+
+.overlay {
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+background-color: rgba(0, 0, 0, 0.2); /* 40% opacity black */
+z-index: 1; /* Make sure it's behind the text */
+transition: opacity 1.0s;
+}
+  
+.hero-body,
+.hero-head,
+.hero-foot {
+  z-index: 2; /* Ensure text is above the overlay */
+  transition: opacity 1.0s;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fc317e 0%, #f69c5e 25%, #f6c177 50%, #9cce6a 75%, #4fc1ff 100%);
+    background-size: auto;
+    background-clip: border-box;
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease-in-out infinite;
+  padding-bottom: 0.2em !important;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Make the hero truly full-bleed and avoid iOS 100vh bugs */
+html, body { height: 100%; }
+.hero.is-fullheight.video { min-height: 100svh; position: relative; }
+
+/* Video covers the entire hero */
+.hero.video .hero-video {
+  position: absolute;
+  inset: 0;              /* top:0; right:0; bottom:0; left:0 */
+  width: 100%;
+  height: 100%;
+}
+.hero-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Subtle overlay for text contrast */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55),
+    rgba(0,0,0,0.30) 35%,
+    rgba(0,0,0,0.55)
+  );
+}
+
+/* Center hero text and ensure it fits without scrolling */
+.hero.video .hero-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;   /* vertically center */
+  justify-content: center;
+  padding: 6vh 2vw;      /* breathing room without forcing overflow */
+}
+
+/* Keep the inner width generous on desktop while respecting smaller screens */
+.hero.video .hero-body .container {
+  max-width: min(1200px, 92vw);
+}
+
+
+
+.hero .title.publication-title {
+  font-size: 7rem;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hero .subtitle.publication-title {
+  font-size: clamp(2rem, 2.4vw, 2.4rem) !important;
+  line-height: 1.1;
+  margin-top: 1rem !important;
+}
+
+/* Make authors wrap nicely and scale with viewport */
+.hero .publication-authors {
+  font-size: clamp(0.95rem, 1.7vw, 1.4rem);
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.6rem;
+  margin-top: 0.75rem;
+}
+.hero .publication-authors sup { font-size: 0.6em; }
+
+
+@media (max-width: 768px) {
+  .hero .publication-links .button { font-size: 0.85rem; padding: 0.5rem 0.75rem; }
+
+  .youtube-embed {
+    width: 100%;
+  }
+
+  .hero .title.publication-title {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-head {
+    display: none !important;
+  }
+  .is-hidden-tablet {
+    display: block !important;
+  }
+}
+
+#hero-subtitle {
+  font-size: 2rem !important;
+  margin-top: 1rem  !important;
+  margin-bottom: 2rem  !important;
+  margin-left: 2rem !important;
+  margin-right: 2rem !important;
+}

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="DreamPlan: Efficient Reinforcement Fine-Tuning of Vision-Language Planners via Video World Models">
+  <meta name="keywords" content="Robotics, Reinforcement Learning, Vision-Language Model, Robot Learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamPlan</title>
+  <link rel="icon" type="image/png" href="./static/images/usc_favicon.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QZ38WT2YPD');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/19914a84eb.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    /* Demo carousel */
+    .demo-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      font-size: 2rem;
+      padding: 12px 18px;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .demo-arrow:hover { background: rgba(0,0,0,0.8); }
+    .demo-arrow-left { left: -50px; }
+    .demo-arrow-right { right: -50px; }
+    .demo-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #bbb;
+      margin: 0 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .demo-dot-active { background: #555; }
+    .demo-num-btn { margin: 0 4px; }
+    .demo-task-btn { margin: 0 4px; }
+    @media (max-width: 768px) {
+      .demo-arrow-left { left: -5px; }
+      .demo-arrow-right { right: -5px; }
+      .demo-arrow { font-size: 1.2rem; padding: 8px 12px; }
+    }
+
+    /* Reusable utilities */
+    body { margin: 0; padding: 0; }
+    .hero.video { position: relative; overflow: hidden; }
+    .hero-video { width: 100%; }
+    .hero-video img { width: 100%; height: auto; display: block; }
+
+    /* GIF grid */
+    .gif-container { position: relative; overflow: hidden; border-radius: 10px; }
+    .gif-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gif-caption { position: absolute; top: 0; left: 0; color: white; background-color: rgba(0, 0, 0, 0.55); padding: 6px 10px; font-size: 0.9rem; border-bottom-right-radius: 8px; }
+    .gif-grid { margin-top: 1rem; }
+
+    /* Authors: shrink on mobile */
+    @media (max-width: 768px) {
+      .publication-authors { font-size: 1.3rem !important; line-height: 1.3rem !important; }
+      .publication-authors .author-block { display: inline-block; margin: 0 2px; }
+    }
+
+    /* Center figures responsively without overflows */
+    figure.image.centered { margin: 2em auto; display: flex; justify-content: center; }
+    figure.image.centered img { max-width: 100%; height: auto; }
+
+
+/* Subtle overlay for text contrast */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55),
+    rgba(0,0,0,0.30) 35%,
+    rgba(0,0,0,0.55)
+  );
+}
+
+/* Hero text overlays the teaser image */
+.hero.video .hero-body {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero.video .hero-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+/* Keep the inner width generous on desktop while respecting smaller screens */
+.hero.video .hero-body .container {
+  max-width: min(1200px, 92vw);
+}
+
+/* Clamp the big title and subtitle so they never overflow the viewport */
+.hero .title.publication-title {
+  /* overrides inline font-size if still present */
+  font-size: clamp(2.2rem, 8vw, 7rem) !important;
+  line-height: 0.95;
+  margin: 0;
+}
+.hero .subtitle.publication-title {
+  font-size: clamp(1rem, 2.4vw, 2.4rem) !important;
+  line-height: 1.1;
+  margin-top: 1rem !important;
+}
+
+/* Make authors wrap nicely and scale with viewport */
+.hero .publication-authors {
+  font-size: clamp(0.95rem, 1.7vw, 1.4rem);
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.6rem;
+  margin-top: 0.75rem;
+}
+.hero .publication-authors sup { font-size: 0.6em; }
+
+
+@media (max-width: 768px) {
+  .hero .publication-links .button { font-size: 0.85rem; padding: 0.5rem 0.75rem; }
+}
+  </style>
+<link rel="preload" as="image" href="./static/images/DreamPlan_teaser.svg" fetchpriority="high">
+</head>
+
+<body>
+
+  <section class="hero is-link video" style="position: relative;">
+    <img src="./static/images/DreamPlan_teaser_v3_resize.jpg" alt="DreamPlan Teaser" style="width: 100%; height: auto; display: block;">
+    <div class="overlay"></div>
+
+    <!-- Site nav (desktop only header container). Links are injected from a single array below. -->
+    <div class="hero-head is-hidden-mobile">
+      <header class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container is-size-5">
+          <div class="navbar-menu is-active">
+            <div class="navbar-end" id="desktop-links"><!-- populated by JS --></div>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 id="hero-title" class="title is-1 publication-title is-size-1-mobile gradient-text">
+          DreamPlan
+        </h1>
+        <h2 id="hero-subtitle" class="subtitle is-3 publication-title is-size-5-mobile">
+          Efficient Reinforcement Fine-Tuning of Vision-Language Planners<br>via Video World Models
+        </h2>
+
+        <div class="is-size-4 publication-authors">
+          <span class="author-block"><a href="https://emily-jia.github.io/personal-web/">Emily Jia</a><sup>*1</sup>,</span>
+          <span class="author-block"><a href="https://weiduoyuan.com/">Weiduo Yuan</a><sup>*1</sup>,</span>
+          <span class="author-block"><a href="https://www.linkedin.com/in/tianheng-shi-5244b8201/">Tianheng Shi</a><sup>1</sup>,</span>
+          <span class="author-block"><a href="https://vitorguizilini.github.io/">Vitor Guizilini</a><sup>2</sup></span>
+          <span class="author-block"><a href="https://pointscoder.github.io">Jiageng Mao</a><sup>1</sup>,</span>
+          <span class="author-block"><a href="https://yuewang.xyz">Yue Wang</a><sup>1</sup></span>
+        </div>
+        <div class="is-size-5 publication-authors">
+          <span class="author-block"><sup>1</sup>USC Physical Superintelligence (PSI) Lab</span>
+          <span class="author-block"><sup>2</sup>Toyota Research Institute</span>
+        </div>
+        <p class="has-text-centered" style="margin-top:1rem;"><sup>*</sup>Equal contribution</p>
+
+        <!-- Mobile-only buttons. Populated from the SAME array as desktop nav. -->
+        <div class="column has-text-centered is-hidden-tablet">
+          <div class="publication-links" id="mobile-links"><!-- populated by JS --></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Publication Links -->
+  <section class="section" style="padding-top: 1rem; padding-bottom: 1rem;">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <div class="publication-links">
+            <!-- arXiv Link -->
+            <span class="link-block">
+              <a href=""
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <img src="./static/images/arxiv.svg" alt="arxiv" style="width:18px; height:18px;"/>
+                </span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <!-- PDF Link -->
+            <span class="link-block">
+              <a href=""
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <img src="./static/images/pdf.svg" alt="PDF" style="width:18px; height:18px;"/>
+                </span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <!-- Code Link -->
+            <span class="link-block">
+              <a href=""
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Code(Coming Soon)</span>
+              </a>
+            </span>
+            <!-- BibTeX Link -->
+            <span class="link-block">
+              <a href="#BibTeX"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fas fa-book-open"></i>
+                </span>
+                <span>BibTex</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section" id="abstract">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths has-text-justified">
+          <h2 class="title is-3 has-text-centered">Abstract</h2>
+          <p>
+            Robotic manipulation requires sophisticated commonsense reasoning, a capability naturally possessed by large-scale Vision-Language Models (VLMs). While VLMs show promise as zero-shot planners, their lack of grounded physical understanding often leads to compounding errors and low success rates when deployed in complex real-world environments, particularly for challenging tasks like deformable object manipulation. Although Reinforcement Learning (RL) can adapt these planners to specific task dynamics, directly fine-tuning VLMs via real-world interaction is prohibitively expensive, unsafe, and sample-inefficient. To overcome this bottleneck, we introduce <strong>DreamPlan</strong>, a novel framework for the reinforcement fine-tuning of VLM planners via video world models. Instead of relying on costly physical rollouts, <strong>DreamPlan</strong> first leverages the zero-shot VLM to collect exploratory interaction data. We demonstrate that this sub-optimal data is sufficient to train an action-conditioned video generation model, which implicitly captures complex real-world physics. Subsequently, the VLM planner is fine-tuned entirely within the ``imagination" of this video world model using Odds Ratio Policy Optimization (ORPO). By utilizing these virtual rollouts, physical and task-specific knowledge is efficiently injected into the VLM. Our results indicate that <strong>DreamPlan</strong> bridges the gap between semantic reasoning and physical grounding, significantly improving manipulation success rates without the need for large-scale real-world data collection.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video -->
+  <section class="section" id="video">
+    <div class="container is-max-widescreen" style="text-align: center;">
+      <h2 class="title is-3 has-text-centered is-size-4-mobile">Technical Summary Video</h2>
+      <video width="80%" controls playsinline preload="auto" style="aspect-ratio: 16 / 9;">
+        <source src="./static/videos/intro.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <!-- Overview figure -->
+  <section class="section" id="overview-figure">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths has-text-justified">
+          <h2 class="title is-3 has-text-centered">Method Overview</h2>
+          <figure class="image centered">
+            <img src="static/images/DreamPlan_method_compressed.png" alt="DreamPlan Method Overview.">
+          </figure>
+          <p>
+            <b>Stage 1: Zero-shot proposal.</b> Given the current observation and goal image,
+            a pretrained VLM planner generates multiple candidate keypoint-based manipulation actions.
+          </p>
+          <p>
+            <b>Stage 2: World model learning.</b> These zero-shot actions are executed to collect
+            diverse action&ndash;observation trajectories, which are used to fine-tune an
+            action-conditioned diffusion world model that predicts object deformation outcomes
+            from rendered robot-motion videos.
+          </p>
+          <p>
+            <b>Stage 3: World-model-guided alignment.</b> The trained world model acts as a verifier
+            to evaluate sampled VLM actions by predicting their future outcomes; comparing
+            predicted outcomes yields pairwise preferences (more vs. less goal-consistent actions),
+            which are used to fine-tune the VLM planner via Odds Ratio Policy Optimization (ORPO),
+            aligning it toward physics-consistent behaviors without additional real-world interaction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dataset section -->
+  <section class="section" id="dataset">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths has-text-justified">
+          <h2 class="title is-3 has-text-centered">Experiments</h2>
+
+          <!-- <h3 class="title is-4 has-text-centered">Success Rate Improvements via RL Fine-Tuning</h3>
+          <figure class="image" style="margin: 2em auto; max-width: 70%;">
+            <img src="static/images/zeroshot_vs_rl.png" alt="Zero-shot vs. RL Performance">
+          </figure>
+          <p>
+            Applying our RL pipeline yields a substantial improvement in task success rates
+            compared to the zero-shot baseline. Across all evaluated tasks, we observe notable
+            absolute gains ranging from 15% to 40%, intuitively highlighting how fine-tuning
+            dramatically enhances the model's ability to successfully execute complex
+            manipulation commands in real-world environments.
+          </p> -->
+
+          <h3 class="title is-4 has-text-centered">Quantitative results on real-world task</h3>
+          <figure class="image" style="margin: 2em auto; max-width: 100%;">
+            <img src="static/images/result_tab.jpg" alt="Quantitative results on real-world task.">
+          </figure>
+          <p>
+            Through <strong>DreamPlan RL fine-tuning</strong>, Qwen3-VL-8B achieves state-of-the-art (SOTA) performance in complex object manipulation, consistently outperforming leading pure zero-shot baselines.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Qualitative Comparisons (sub-section of Experiments) -->
+  <section class="section" id="qualitative">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h3 class="title is-4 has-text-centered">Qualitative Comparisons on real-world task</h3>
+
+          <!-- Task selector buttons -->
+          <div class="has-text-centered" style="margin-bottom: 1rem;">
+            <button class="button is-rounded demo-task-btn is-info" onclick="goToSlide(0)">Monkey Repositioning</button>
+            <button class="button is-rounded demo-task-btn is-info is-outlined" onclick="goToSlide(1)">Rope Straightening</button>
+            <button class="button is-rounded demo-task-btn is-info is-outlined" onclick="goToSlide(2)">Clothes Folding</button>
+          </div>
+
+          <!-- Demo selector buttons -->
+          <div class="has-text-centered" style="margin-bottom: 1.5rem;">
+            <button class="button is-rounded demo-num-btn is-dark" onclick="selectDemo(0)">Demo 1</button>
+            <button class="button is-rounded demo-num-btn is-outlined" onclick="selectDemo(1)">Demo 2</button>
+            <button class="button is-rounded demo-num-btn is-outlined" onclick="selectDemo(2)">Demo 3</button>
+          </div>
+
+          <!-- Content -->
+          <div id="demo-content"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cloud evaluation CTA
+  <section class="section">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Try Out Our Cloud Evaluation Platform!</h2>
+          <div class="content has-text-centered">
+            <p>
+              We provide a cloud-based evaluation platform that allows researchers to seamlessly deploy their policies in our controlled setting and receive performance feedback. Click the button below to visit our evaluation website.
+            </p>
+            <a href="./cloud_evaluation_coming_soon.html" class="button is-primary is-rounded is-large">Coming Soon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>TBD</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              Website template modified from <a href="https://nerfies.github.io/">NeRFies</a>, <a
+                href="https://huy-ha.github.io/scalingup/">Scaling Up Distilling Down</a>, <a href="https://umi-on-legs.github.io/">Umi-on-legs</a>, and <a href="https://humanoideveryday.github.io/">Humanoid Everyday</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // === Single source of truth for links ===
+    // const LINKS = [
+    //   {
+    //     href: '',
+    //     iconHtml: '<img src="./static/images/arxiv.svg" alt="arxiv" style="width:18px; height:18px;"/>',
+    //     label: 'Paper'
+    //   },
+    //   {
+    //     href: './file/humanoid_everyday_arxiv.pdf',
+    //     iconHtml: '<img src="./static/images/pdf.svg" alt="PDF" style="width:18px; height:18px;"/>',
+    //     label: 'Paper'
+    //   },
+    //   {
+    //     href: 'https://github.com/ausbxuse/Humanoid-Everyday',
+    //     iconHtml: '<i class="fab fa-github"></i>',
+    //     label: 'Code'
+    //   }
+    // ];
+
+    function renderDesktopLinks(container) {
+      LINKS.forEach(({ href, iconHtml, label, target, rel }) => {
+        const a = document.createElement('a');
+        a.className = 'navbar-item pl-4 pr-4';
+        a.href = href;
+        if (target) a.target = target;
+        if (rel) a.rel = rel;
+        a.innerHTML = `<span class="icon" style="margin-right:5px;">${iconHtml}</span><span>${label}</span>`;
+        container.appendChild(a);
+      });
+    }
+
+    function renderMobileLinks(container) {
+      LINKS.forEach(({ href, iconHtml, label, target, rel }) => {
+        const wrapper = document.createElement('span');
+        wrapper.className = 'link-block';
+
+        const a = document.createElement('a');
+        a.className = 'external-link button is-normal is-rounded is-dark';
+        a.href = href;
+        if (target) a.target = target;
+        if (rel) a.rel = rel;
+        a.innerHTML = `<span class="icon">${iconHtml}</span><span>${label}</span>`;
+
+        wrapper.appendChild(a);
+        container.appendChild(wrapper);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const desktop = document.getElementById('desktop-links');
+      const mobile = document.getElementById('mobile-links');
+      if (desktop) renderDesktopLinks(desktop);
+      if (mobile) renderMobileLinks(mobile);
+
+      // Simple tabs init (unchanged)
+      const tabs = document.querySelectorAll('.tabs li');
+      const tabContent = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const target = document.getElementById(tab.dataset.tab);
+          tabs.forEach(t => t.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          tabContent.forEach(content => { content.style.display = 'none'; });
+          if (target) target.style.display = 'block';
+        });
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const video = document.getElementById('teaser-video');
+      if (video) {
+        video.play().catch(error => {
+          console.error("Video play failed:", error);
+        });
+      }
+    });
+  </script>
+  <script>
+    // Demo carousel - data driven
+    const TASKS = [
+      { key: 'monkey', name: 'Monkey Repositioning' },
+      { key: 'rope', name: 'Rope Straightening' },
+      { key: 'clothes', name: 'Clothes Folding' }
+    ];
+    let currentTask = 0;
+    let currentDemo = 0;
+
+    function buildSlide() {
+      const task = TASKS[currentTask];
+      const idx = currentDemo;
+      const container = document.getElementById('demo-content');
+      container.innerHTML = `
+        <!-- DreamPlan Finetune -->
+        <div style="border:3px solid #1a9641; border-radius:12px; padding:12px; margin-bottom:2.5rem; background:#e8f5e9;">
+          <p class="has-text-centered" style="font-weight:700; color:#1a9641; font-size:1.1rem; margin-bottom:0.8rem;">Qwen3VL-8B + DreamPlan Finetune</p>
+          <div class="columns is-mobile is-centered" style="margin:0; max-width:700px; margin-left:auto; margin-right:auto; gap:50px;">
+            <div class="column" style="padding:6px;">
+              <p class="has-text-centered" style="font-size:0.85rem;font-weight:600;">Target</p>
+              <video playsinline autoplay muted loop style="width:100%;border-radius:6px;">
+                <source src="./static/videos/samples/${task.key}_target_success_${idx}.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column" style="padding:6px;">
+              <p class="has-text-centered" style="font-size:0.85rem;font-weight:600;">Real Rollout</p>
+              <video playsinline autoplay muted loop style="width:100%;border-radius:6px;">
+                <source src="./static/videos/samples/${task.key}_rollout_success_${idx}.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <!-- Zero-shot Plan -->
+        <div style="border:3px solid #d32f2f; border-radius:12px; padding:12px; background:#fbe9e7;">
+          <p class="has-text-centered" style="font-weight:700; color:#d32f2f; font-size:1.1rem; margin-bottom:0.8rem;">Qwen3VL-8B Zero-shot</p>
+          <div class="columns is-mobile is-centered" style="margin:0; max-width:700px; margin-left:auto; margin-right:auto; gap:50px;">
+            <div class="column" style="padding:6px;">
+              <p class="has-text-centered" style="font-size:0.85rem;font-weight:600;">Target</p>
+              <video playsinline autoplay muted loop style="width:100%;border-radius:6px;">
+                <source src="./static/videos/samples/${task.key}_target_fail_${idx}.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column" style="padding:6px;">
+              <p class="has-text-centered" style="font-size:0.85rem;font-weight:600;">Real Rollout</p>
+              <video playsinline autoplay muted loop style="width:100%;border-radius:6px;">
+                <source src="./static/videos/samples/${task.key}_rollout_fail_${idx}.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+      `;
+      // Play all videos
+      container.querySelectorAll('video').forEach(v => v.play().catch(() => {}));
+    }
+
+    function changeSlide(dir) {
+      goToSlide((currentTask + dir + TASKS.length) % TASKS.length);
+    }
+
+    function goToSlide(n) {
+      currentTask = n;
+      document.querySelectorAll('.demo-task-btn').forEach((b, i) => {
+        b.classList.toggle('is-outlined', i !== n);
+      });
+      buildSlide();
+    }
+
+    function selectDemo(n) {
+      currentDemo = n;
+      document.querySelectorAll('.demo-num-btn').forEach((b, i) => {
+        b.classList.toggle('is-dark', i === n);
+        b.classList.toggle('is-outlined', i !== n);
+      });
+      buildSlide();
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => buildSlide());
+  </script>
+</body>
+
+</html>
