@@ -33,7 +33,15 @@
 ## Citation
 
 ```bibtex
-TBD
+@misc{jia2026dreamplanefficientreinforcementfinetuning,
+      title={DreamPlan: Efficient Reinforcement Fine-Tuning of Vision-Language Planners via Video World Models}, 
+      author={Emily Yue-Ting Jia and Weiduo Yuan and Tianheng Shi and Vitor Guizilini and Jiageng Mao and Yue Wang},
+      year={2026},
+      eprint={2603.16860},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2603.16860}, 
+}
 ```
 
 ## License
