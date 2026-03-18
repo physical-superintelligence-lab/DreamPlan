@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[![arXiv](https://img.shields.io/badge/arXiv-df2a2a.svg)]() [![Project Page](https://img.shields.io/badge/Project-Page-a)](https://psi-lab.ai/DreamPlan) [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](./LICENSE)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.16860-df2a2a.svg)](https://arxiv.org/abs/2603.16860) [![Project Page](https://img.shields.io/badge/Project-Page-a)](https://psi-lab.ai/DreamPlan) [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](./LICENSE)
 
 </div>
 
